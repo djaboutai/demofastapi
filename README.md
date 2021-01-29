@@ -35,4 +35,4 @@ Simple as hello, you just need to:
 * __YOU ARE FREE TO RUN WHATEVER YOU WANT__ `:innocent:`
 
 ## authors
-* Samir Omar {main contributor} `:blush:`
+* Samir Omar {main contributor} :blush:
