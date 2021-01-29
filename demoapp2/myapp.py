@@ -27,6 +27,10 @@ tags_metadata = [
     }
 ]
 
+origins = [
+    "http://127.0.0.1:8888",
+]
+
 # FastAPI initialization app
 app = FastAPI(
     title="demoapp2",
@@ -38,9 +42,7 @@ app = FastAPI(
 
 # App static folder {for css files}
 app.mount("/static", StaticFiles(directory="demoapp2/static"), name="static")
-origins = [
-    "http://127.0.0.1:80",
-]
+
 
 # App add middleware CORS, allows origins, credentials, methods and headers
 app.add_middleware(
