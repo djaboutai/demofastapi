@@ -32,7 +32,7 @@ Simple as hello, you just need to:
 * And run `uvicorn demoapp1.myapp:app --reload --port xxxx` <br>
 * Want to see api description? go to `localhost/docs` <br>
 * ... and then, it is done. <br>
-* __YOU ARE FREE TO RUN WHATEVER YOU WANT__ `:innocent:`
+* __YOU ARE FREE TO RUN WHATEVER YOU WANT__ :innocent:
 
 ## authors
 * Samir Omar {main contributor} :blush:
