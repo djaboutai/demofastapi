@@ -1,6 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 
-from .payment import process, providers
+from .payment import process
 
 
 app = FastAPI(
@@ -10,10 +10,8 @@ app = FastAPI(
     version="0.0.1"
 )
 
+
 app.include_router(
     process.router
 )
 
-app.include_router(
-    providers.router
-)
