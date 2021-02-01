@@ -26,7 +26,7 @@ __demoapp2__ also has implemented:
 * `Include router from myapp.py with -prefic -tags -responses`
 * `Controllers called by modules with -summary`
 
-## demoapp2
+## demoapp3
 This third repository is a demo of a process payment by Card using only 1 method:
 * `route`   [POST]  `"/paymentprocess"` with queries:
     * creditcardnumber `string` <br>
