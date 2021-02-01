@@ -4,7 +4,7 @@ from fastapi import APIRouter, status, Body, Request, Query
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.encoders import jsonable_encoder
 
-from .process_controller import *
+from .process_controller import RequestExternalApiControllingAmount, ControlDatetime
 
 import datetime
 
@@ -50,7 +50,7 @@ async def payment_process(
                                                           "Cannot be in the past.")
 ):
     # Initialize controllers
-    ctrl_amount = ControlAmount()
+    ctrl_amount = RequestExternalApiControllingAmount()
     ctrl_datetime = ControlDatetime()
 
     # Get request datetime
@@ -70,7 +70,7 @@ async def payment_process(
             "securitycode": securitycode,
             "amount": amount,
             "message_date": ret_date,
-            "message_amount": ret_amount
+            "message_external_api": ret_amount
         }
 
         return JSONResponse(status_code=int(ret_amount['status']), content=jsonable_encoder(response))
