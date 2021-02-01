@@ -50,19 +50,19 @@ async def payment_process(
                                                           "Cannot be in the past.")
 ):
     # Initialize controllers
-    ctrl_amount = RequestExternalApiControllingAmount()
+    ctrl_amount_extapi_result = RequestExternalApiControllingAmount()
     ctrl_datetime = ControlDatetime()
 
     # Get request datetime
     params = request.query_params
     print(f'ProcessPayment activated {str(params)}')
 
-    # Control datetime if in past
+    # First control -> datetime
     ret_date = ctrl_datetime(str(datetime.date.today()), str(expirationdate))
 
-    # First control -> datetime
     if ret_date:
-        ret_amount = ctrl_amount(creditcardnumber, cardholder, securitycode, amount, expirationdate, params)
+        # Second control -> amount & payment gateway
+        ret_amount = ctrl_amount_extapi_result(creditcardnumber, cardholder, securitycode, amount, expirationdate, params)
         response = {
             "creditcardnumber": creditcardnumber,
             "cardholder": cardholder,
@@ -72,9 +72,7 @@ async def payment_process(
             "message_date": ret_date,
             "message_external_api": ret_amount
         }
-
         return JSONResponse(status_code=int(ret_amount['status']), content=jsonable_encoder(response))
-
     else:
         response = {
             "creditcardnumber": creditcardnumber,
