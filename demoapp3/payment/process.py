@@ -1,27 +1,31 @@
+import datetime
 from typing import Optional
 
-from fastapi import APIRouter, status, Body, Request, Query
-from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi import APIRouter, status, Request, Query
+from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
 from .process_controller import RequestExternalApiControllingAmount, ControlDatetime
 
-import datetime
 
 router = APIRouter(
     prefix="/paymentprocess",
     tags=["tag-paymentprocess"]
 )
 
+# Initialize controllers
+ctrl_amount_external_api_result = RequestExternalApiControllingAmount()
+ctrl_datetime = ControlDatetime()
 
-@router.post(
+
+@router.get(
     "",
     responses={
-        200: {"message": "Payment is redirected"},
+        200: {"message": "Payment is accepted"},
         400: {"message": "The request is invalid"},
         404: {"message": "Not found"},
-        406: {"message": "Not acceptable"},
-        500: {"message": "Any error"}
+        406: {"message": "Not acceptable, expiration date of card in the past"},
+        500: {"message": "Any internal error"}
     }
 )
 async def payment_process(
@@ -49,20 +53,26 @@ async def payment_process(
                                               description="ExpirationDate is the expiration date of the card."
                                                           "Cannot be in the past.")
 ):
-    # Initialize controllers
-    ctrl_amount_extapi_result = RequestExternalApiControllingAmount()
-    ctrl_datetime = ControlDatetime()
+    """
 
-    # Get request datetime
+    :param request: The request captured by router. \n
+    :param creditcardnumber: The request first query given as string. \n
+    :param cardholder: The request second query given as string. \n
+    :param securitycode: The request third query given as string. \n
+    :param amount: The request fourth query given as float. \n
+    :param expirationdate: The request fifth query given as string. \n
+    :return: Return JSONResponse with information related to the request. \n
+    """
+    # Get request queries
     params = request.query_params
-    print(f'ProcessPayment activated {str(params)}')
 
     # First control -> datetime
     ret_date = ctrl_datetime(str(datetime.date.today()), str(expirationdate))
 
     if ret_date:
         # Second control -> amount & payment gateway
-        ret_amount = ctrl_amount_extapi_result(creditcardnumber, cardholder, securitycode, amount, expirationdate, params)
+        ret_external_api = ctrl_amount_external_api_result(creditcardnumber, cardholder, securitycode,
+                                                           amount, expirationdate, str(params))
         response = {
             "creditcardnumber": creditcardnumber,
             "cardholder": cardholder,
@@ -70,9 +80,9 @@ async def payment_process(
             "securitycode": securitycode,
             "amount": amount,
             "message_date": ret_date,
-            "message_external_api": ret_amount
+            "message_external_api": ret_external_api
         }
-        return JSONResponse(status_code=int(ret_amount['status']), content=jsonable_encoder(response))
+        return JSONResponse(status_code=ret_external_api['status'], content=jsonable_encoder(response))
     else:
         response = {
             "creditcardnumber": creditcardnumber,
