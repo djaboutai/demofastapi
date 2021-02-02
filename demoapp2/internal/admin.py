@@ -2,16 +2,16 @@ from fastapi import APIRouter, status, Request, Form
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.encoders import jsonable_encoder
 
-router = APIRouter()
+routerAdmin = APIRouter()
 
 
-@router.post("/", summary="Get admin name")
+@routerAdmin.post("/", summary="Get admin name")
 async def get_admin():
     response = jsonable_encoder({"message": "Admin getting zigiiprens"})
     return JSONResponse(status_code=status.HTTP_200_OK, content=response)
 
 
-@router.get("/redirect", summary="Redirect to admin root path")
+@routerAdmin.get("/redirect", summary="Redirect to admin root path")
 async def get_admin_redirect(request: Request):
     client_host = request.client.host
     client_port = request.client.port
@@ -21,7 +21,7 @@ async def get_admin_redirect(request: Request):
     return RedirectResponse(url=f"/admin/?{client_query}")
 
 
-@router.post("/login", summary="Login form for admin")
+@routerAdmin.post("/login", summary="Login form for admin")
 async def post_admin_login(request: Request, username: str = Form(...), password: str = Form(...)):
     client_host = request.client.host
     client_port = request.client.port
