@@ -2,10 +2,12 @@ from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from fastapi.staticfiles import StaticFiles
-from .dependencies import get_query_token, get_token_header
-from .root import home
-from .internal import admin
-from .routers import items, users
+from dependencies import get_query_token, get_token_header
+from root import home
+from internal import admin
+from routers import items, users
+
+import uvicorn
 
 # Tags metadata
 tags_metadata = [
@@ -41,7 +43,7 @@ app = FastAPI(
 )
 
 # App static folder {for css files}
-app.mount("/static", StaticFiles(directory="demoapp2/static"), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 # App add middleware CORS, allows origins, credentials, methods and headers
@@ -55,28 +57,31 @@ app.add_middleware(
 
 # App include routers {users, items, admin and root}
 app.include_router(
-    users.router,
+    users.routerUsers,
     prefix="/users",
     tags=["users"],
     dependencies=[Depends(get_token_header)],
     responses={404: {"description": "Not found"}},
 )
 app.include_router(
-    items.router,
+    items.routerItems,
     prefix="/items",
     tags=["items"],
     dependencies=[Depends(get_token_header)],
     responses={404: {"description": "Not found"}},
 )
 app.include_router(
-    admin.router,
+    admin.routerAdmin,
     prefix="/admin",
     tags=["admin"],
     dependencies=[Depends(get_token_header)],
     responses={418: {"description": "I'm a teapot"}},
 )
 app.include_router(
-    home.router,
+    home.routerHome,
     tags=["root"],
     responses={404: {"description": "Not found"}},
 )
+
+if __name__ == "__main__":
+    uvicorn.run("myapp:app", host="0.0.0.0", port=8888, reload=True)

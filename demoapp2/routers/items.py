@@ -4,19 +4,19 @@ from fastapi.encoders import jsonable_encoder
 
 
 # APIRouter control for items
-router = APIRouter()
+routerItems = APIRouter()
 
 
 fake_items_db = {"plumbus": {"name": "Plumbus"}, "gun": {"name": "Portal Gun"},
                  "glock": {"name": "Glock"}, "awp": {"name": "AWP"}}
 
 
-@router.get("/", summary="Returns all items.")
+@routerItems.get("/", summary="Returns all items.")
 async def get_all_items():
     return JSONResponse(status_code=status.HTTP_200_OK, content=fake_items_db)
 
 
-@router.get("/{item_id}", summary="Returns name of chosen item_id.")
+@routerItems.get("/{item_id}", summary="Returns name of chosen item_id.")
 async def get_item_by_id(item_id: str):
     if item_id not in fake_items_db:
         response = jsonable_encoder({"response": "Not Found"})
@@ -26,7 +26,7 @@ async def get_item_by_id(item_id: str):
         return JSONResponse(status_code=status.HTTP_200_OK, content=response)
 
 
-@router.put(
+@routerItems.put(
     "/{item_id}",
     responses={403: {"description": "Operation forbidden"}},
     summary="Returns updated name of chosen item_id."

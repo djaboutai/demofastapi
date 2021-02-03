@@ -28,7 +28,7 @@ __demoapp2__ also has implemented:
 
 ## demoapp3
 This third repository is a demo of a process payment by Card using only 1 method:
-* `route`   [POST]  `"/paymentprocess"` with queries:
+* `route`   [GET]  `"/paymentprocess"` with queries:
     * creditcardnumber `string` <br>
     * cardholder `string` <br>
     * securitycode `string` <br>

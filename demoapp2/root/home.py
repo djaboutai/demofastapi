@@ -2,10 +2,10 @@ from fastapi import APIRouter, status, Request
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.encoders import jsonable_encoder
 
-router = APIRouter()
+routerHome = APIRouter()
 
 
-@router.get("/")
+@routerHome.get("/")
 async def get_root():
     """
     :param: none.
