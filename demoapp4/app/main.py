@@ -1,7 +1,10 @@
+import uvicorn
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
+from app.routes.users import routerUsers
 
 
 def get_application():
@@ -15,7 +18,16 @@ def get_application():
         allow_headers=["*"],
     )
 
+    _app.include_router(
+        routerUsers,
+        prefix="/user",
+        tags=["users"]
+    )
+
     return _app
 
 
 app = get_application()
+
+if __name__ == "__main__":
+    uvicorn.run("app.main:app", host="127.0.0.1", port=8888, reload=True)
